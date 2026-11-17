@@ -2,8 +2,9 @@ name: CI
 
 on:
   pull_request:
-  push:
-    branches: [main]
+  # Вызывается перед публикацией в npm (release.yml). На push в main не запускается:
+  # код в main уже проверен в PR.
+  workflow_call:
 
 jobs:
   test:
