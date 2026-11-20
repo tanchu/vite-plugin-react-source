@@ -21,6 +21,11 @@ export interface ReactSourceStringOptions {
    * HTML elements are always tagged. Not set or empty: every component is tagged.
    */
   libraries?: string[];
+  /**
+   * Put the attribute before spread props, so a `data-source` passed in from the parent wins:
+   * a wrapper like `<Button {...props} />` then points to where the wrapper is used, not to the wrapper file.
+   */
+  preferCallSite?: boolean;
   /** Files to transform. Default: `.js .jsx .mjs .cjs .tsx` (`.ts` cannot contain JSX). */
   include?: FilterPattern;
   /** Files to skip. Default: `node_modules`. */
@@ -144,6 +149,8 @@ export interface TransformOptions {
   root?: string;
   /** Tag only components imported from these packages; HTML elements are always tagged. */
   libraries?: string[];
+  /** Insert the attribute before spread props, so a value passed from the parent wins. */
+  preferCallSite?: boolean;
 }
 
 /**
@@ -183,8 +190,9 @@ export function transformReactSource(
 
       starts ??= lineStarts(code);
       const line = lineOf(starts, el.start);
+      const afterName = el.typeArguments?.end ?? el.name.end;
       const last = el.attributes[el.attributes.length - 1];
-      const at = last ? last.end : (el.typeArguments?.end ?? el.name.end);
+      const at = options.preferCallSite || !last ? afterName : last.end;
       s.appendLeft(at, ` ${ATTR}=${attrValue(`${source}:${line}`)}`);
     },
   }).visit(result.program);
@@ -197,6 +205,7 @@ export default function reactSourceString(options: ReactSourceStringOptions = {}
   const filter = createFilter(options.include ?? DEFAULT_INCLUDE, options.exclude ?? DEFAULT_EXCLUDE);
   const excluded = options.excluded ?? [];
   const libraries = options.libraries ?? [];
+  const preferCallSite = options.preferCallSite ?? false;
   let root = options.root || undefined;
 
   return {
@@ -207,7 +216,7 @@ export default function reactSourceString(options: ReactSourceStringOptions = {}
     },
     transform(code, id) {
       if (!filter(id)) return null;
-      return transformReactSource(code, id, { excluded, root, libraries });
+      return transformReactSource(code, id, { excluded, root, libraries, preferCallSite });
     },
   };
 }
