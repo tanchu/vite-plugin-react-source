@@ -49,6 +49,22 @@
   "engines": {
     "node": ">=18"
   },
+  "compatiblePackages": {
+    "schemaVersion": 1,
+    "vite": {
+      "type": "compatible",
+      "versions": ">=5",
+      "note": "Vite 8 (Rolldown) included"
+    },
+    "rollup": {
+      "type": "incompatible",
+      "reason": "Vite-only: relies on Vite's config and helpers. Use babel-plugin-react-source-string."
+    },
+    "rolldown": {
+      "type": "incompatible",
+      "reason": "Vite-only: relies on Vite's config and helpers. Use babel-plugin-react-source-string."
+    }
+  },
   "peerDependencies": {
     "vite": ">=5"
   },
