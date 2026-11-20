@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-react-source-string",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Native Vite plugin that adds data-source=\"path:line\" attributes to JSX elements (React/UI components and HTML elements) for debugging",
   "type": "module",
   "main": "./dist/index.cjs",
