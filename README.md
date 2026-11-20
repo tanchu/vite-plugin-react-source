@@ -49,14 +49,16 @@ export default defineConfig(({ command }) => ({
 | ---------- | --------------- | ----------------------------- | --------------------------------------------------------------------------- |
 | `excluded` | `string[]`      | `[]`                          | Component/element names to skip (case-insensitive). For `<UI.Button>` the name is `Button`. |
 | `root`     | `string`        | Vite's resolved `root`        | Project root for relative paths.                                            |
+| `libraries` | `string[]`     | — (tag all)                   | Tag only components imported from these packages or their subpaths (`@mui/material/Button` matches `@mui/material`); HTML elements are always tagged. |
 | `include`  | `FilterPattern` | `/\.(?:[cm]?jsx?\|tsx)$/`     | Files to transform (`.ts` can't contain JSX).                               |
 | `exclude`  | `FilterPattern` | `/[\\/]node_modules[\\/]/`    | Files to skip.                                                              |
 
 ## How it works
 
 The plugin adds a `data-source` attribute to **every** JSX opening element — both HTML tags (`<div>`, `<span>`)
-and React components (`<Dialog>`, `<Pencil>`, `<Link>`). Elements listed in `excluded` are skipped,
-and elements that already have a `data-source` attribute are left untouched. Fragments (`<>`) are never tagged.
+and React components (`<Dialog>`, `<Pencil>`, `<Link>`). Elements listed in `excluded` are skipped;
+with `libraries` set, only components imported from those packages are tagged; elements that already have
+a `data-source` attribute are left untouched. Fragments (`<>`) are never tagged.
 
 The attribute value is `relative/path/to/file.tsx:line`, where `line` is the line of the element's opening `<`,
 making it easy to locate any DOM node back to its source from DevTools.
