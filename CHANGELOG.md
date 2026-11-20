@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/tanchu/vite-plugin-react-source/compare/vite-plugin-react-source-string-v0.2.0...vite-plugin-react-source-string-v0.2.1) (2026-11-20)
+
+
+### Bug Fixes
+
+* declare Vite/Rollup/Rolldown compatibility for the Vite plugin registry ([#4](https://github.com/tanchu/vite-plugin-react-source/issues/4)) ([9c85950](https://github.com/tanchu/vite-plugin-react-source/commit/9c859509feb5f58edd1499c289f87e18a3bcd017))
+
 ## [0.2.0](https://github.com/tanchu/vite-plugin-react-source/compare/vite-plugin-react-source-string-v0.1.0...vite-plugin-react-source-string-v0.2.0) (2026-11-20)
 
 
