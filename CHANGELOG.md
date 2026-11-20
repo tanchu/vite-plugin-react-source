@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/tanchu/vite-plugin-react-source/compare/vite-plugin-react-source-string-v0.3.0...vite-plugin-react-source-string-v0.3.1) (2026-11-20)
+
+
+### Bug Fixes
+
+* never tag Fragment and React.Fragment ([#9](https://github.com/tanchu/vite-plugin-react-source/issues/9)) ([678bacd](https://github.com/tanchu/vite-plugin-react-source/commit/678bacd3aa4917a662968888249a3c570766838a))
+
 ## [0.3.0](https://github.com/tanchu/vite-plugin-react-source/compare/vite-plugin-react-source-string-v0.2.1...vite-plugin-react-source-string-v0.3.0) (2026-11-20)
 
 
