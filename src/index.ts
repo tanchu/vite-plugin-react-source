@@ -65,6 +65,12 @@ function elementName(name: JSXElementName): string | undefined {
   }
 }
 
+/** `<Fragment>` and `<React.Fragment>` accept only `key` and `children`; React warns about any other prop. */
+function isFragment(name: JSXElementName): boolean {
+  if (name.type === "JSXIdentifier") return name.name === "Fragment";
+  return name.type === "JSXMemberExpression" && name.property.name === "Fragment";
+}
+
 /** Same rule as the Babel and SWC plugins: the package itself or any of its subpaths. */
 export function fromLibrary(source: string, libraries: Iterable<string>): boolean {
   for (const lib of libraries) {
@@ -181,7 +187,7 @@ export function transformReactSource(
   new Visitor({
     JSXOpeningElement(el: JSXOpeningElement) {
       const name = elementName(el.name);
-      if (name === undefined || excluded.has(name.toLowerCase())) return;
+      if (name === undefined || isFragment(el.name) || excluded.has(name.toLowerCase())) return;
       if (hasDataSource(el.attributes)) return;
       if (imports && !isHtmlElement(el.name)) {
         const root = rootName(el.name);

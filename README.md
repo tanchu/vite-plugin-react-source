@@ -23,7 +23,7 @@ import reactSourceString from "vite-plugin-react-source-string";
 
 export default defineConfig({
   plugins: [
-    reactSourceString({ excluded: ["Fragment", "Slot"] }),
+    reactSourceString({ excluded: ["Slot"] }),
     react(),
   ],
 });
@@ -37,7 +37,7 @@ The plugin runs with `enforce: "pre"`, so it sees the original JSX before `@vite
 ```ts
 export default defineConfig(({ command }) => ({
   plugins: [
-    command === "serve" && reactSourceString({ excluded: ["Fragment"] }),
+    command === "serve" && reactSourceString({ excluded: ["Slot"] }),
     react(),
   ],
 }));
@@ -59,7 +59,7 @@ export default defineConfig(({ command }) => ({
 The plugin adds a `data-source` attribute to **every** JSX opening element — both HTML tags (`<div>`, `<span>`)
 and React components (`<Dialog>`, `<Pencil>`, `<Link>`). Elements listed in `excluded` are skipped;
 with `libraries` set, only components imported from those packages are tagged; elements that already have
-a `data-source` attribute are left untouched. Fragments (`<>`) are never tagged.
+a `data-source` attribute are left untouched. Fragments are never tagged: `<>`, `<Fragment>` and `<React.Fragment>` accept only `key` and `children`, and React warns about any other prop.
 
 The attribute value is `relative/path/to/file.tsx:line`, where `line` is the line of the element's opening `<`,
 making it easy to locate any DOM node back to its source from DevTools.
@@ -143,7 +143,7 @@ The transform is exported for use outside Vite (e.g. in a Rollup/Vitest/custom p
 ```ts
 import { transformReactSource } from "vite-plugin-react-source-string";
 
-const result = transformReactSource(code, "/abs/path/App.tsx", { root: process.cwd(), excluded: ["Fragment"] });
+const result = transformReactSource(code, "/abs/path/App.tsx", { root: process.cwd(), excluded: ["Slot"] });
 // result: { code, map } | null (null = nothing to change or unparseable)
 ```
 
