@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { relativePath, stripVirtualPrefix, transformReactSource } from "../src/index";
+import { fromLibrary, relativePath, stripVirtualPrefix, transformReactSource } from "../src/index";
 
 const t = (code: string, id = "/proj/src/App.tsx", opts: Parameters<typeof transformReactSource>[2] = { root: "/proj" }) =>
   transformReactSource(code, id, opts)?.code ?? null;
@@ -47,6 +47,36 @@ describe("transformReactSource", () => {
     expect(t(`const = <`)).toBeNull();
   });
 
+  it("with libraries, tags HTML elements and only components imported from those packages", () => {
+    const out = t(
+      [
+        `import { Button } from "@mui/material";`,
+        `import Card from "@mui/material/Card";`,
+        `import * as UI from "@mui/material";`,
+        `import { Pencil } from "lucide-react";`,
+        `const a = <div><Button/><Card/><UI.Chip/><Pencil/><Local/><svg:rect/></div>;`,
+      ].join("\n"),
+      undefined,
+      { root: "/proj", libraries: ["@mui/material"] },
+    );
+    expect(out).toContain(
+      `<div data-source="src/App.tsx:5"><Button data-source="src/App.tsx:5"/><Card data-source="src/App.tsx:5"/><UI.Chip data-source="src/App.tsx:5"/><Pencil/><Local/><svg:rect data-source="src/App.tsx:5"/></div>`,
+    );
+  });
+
+  it("with libraries, excluded still wins; an empty list tags every component", () => {
+    expect(
+      t(`import { Button } from "@mui/material";\nconst a = <p><Button/></p>;`, undefined, {
+        root: "/proj",
+        libraries: ["@mui/material"],
+        excluded: ["button", "P"],
+      }),
+    ).toBeNull();
+    expect(t(`const a = <Local/>;`, undefined, { root: "/proj", libraries: [] })).toBe(
+      `const a = <Local data-source="src/App.tsx:1"/>;`,
+    );
+  });
+
   it("produces a source map", () => {
     const r = transformReactSource(`<a/>`, "/proj/a.jsx", { root: "/proj" });
     expect(r?.map.mappings).toBeTruthy();
@@ -57,6 +87,12 @@ describe("path helpers (parity with the SWC plugin)", () => {
   it("stripVirtualPrefix", () => {
     expect(stripVirtualPrefix("[project]/src/a.tsx")).toBe("src/a.tsx");
     expect(stripVirtualPrefix("/src/a.tsx")).toBe("/src/a.tsx");
+  });
+  it("fromLibrary", () => {
+    expect(fromLibrary("@mui/material", ["@mui/material"])).toBe(true);
+    expect(fromLibrary("@mui/material/Button", ["@mui/material"])).toBe(true);
+    expect(fromLibrary("@mui/material-next", ["@mui/material"])).toBe(false);
+    expect(fromLibrary("@mui/icons-material", ["@mui"])).toBe(true);
   });
   it("relativePath", () => {
     expect(relativePath("/proj/", "/proj/src/a.tsx")).toBe("src/a.tsx");
