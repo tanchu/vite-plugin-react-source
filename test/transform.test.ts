@@ -77,6 +77,23 @@ describe("transformReactSource", () => {
     );
   });
 
+  it("by default the attribute goes after spread props (the wrapper file wins)", () => {
+    expect(t(`const B = (props) => <Button variant="x" {...props} />;`)).toBe(
+      `const B = (props) => <Button variant="x" {...props} data-source="src/App.tsx:1" />;`,
+    );
+  });
+
+  it("preferCallSite puts the attribute first, so a data-source from the call site wins", () => {
+    const opts = { root: "/proj", preferCallSite: true };
+    expect(t(`const B = (props) => <Button variant="x" {...props} />;`, undefined, opts)).toBe(
+      `const B = (props) => <Button data-source="src/App.tsx:1" variant="x" {...props} />;`,
+    );
+    expect(t(`const a = <Gen<string> {...p}/>;`, undefined, opts)).toBe(
+      `const a = <Gen<string> data-source="src/App.tsx:1" {...p}/>;`,
+    );
+    expect(t(`const a = <i/>;`, undefined, opts)).toBe(`const a = <i data-source="src/App.tsx:1"/>;`);
+  });
+
   it("produces a source map", () => {
     const r = transformReactSource(`<a/>`, "/proj/a.jsx", { root: "/proj" });
     expect(r?.map.mappings).toBeTruthy();
