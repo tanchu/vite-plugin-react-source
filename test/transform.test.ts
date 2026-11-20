@@ -26,6 +26,13 @@ describe("transformReactSource", () => {
     expect(out).toBe(`const a = <><Fragment><React.fragment><slot/></React.fragment></Fragment><b data-source="src/App.tsx:1"/></>;`);
   });
 
+  it("never tags Fragment or React.Fragment, even without options", () => {
+    expect(t(`const a = <Fragment><React.Fragment key="k"><b/></React.Fragment></Fragment>;`, undefined, {})).toBe(
+      `const a = <Fragment><React.Fragment key="k"><b data-source="/proj/src/App.tsx:1"/></React.Fragment></Fragment>;`,
+    );
+    expect(t(`const a = <Fragments/>;`)).toBe(`const a = <Fragments data-source="src/App.tsx:1"/>;`);
+  });
+
   it("keeps an existing data-source attribute", () => {
     expect(t(`const a = <div data-source="x" />;`)).toBeNull();
   });
