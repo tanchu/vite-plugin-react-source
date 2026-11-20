@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/tanchu/vite-plugin-react-source/compare/vite-plugin-react-source-string-v0.2.1...vite-plugin-react-source-string-v0.3.0) (2026-11-20)
+
+
+### Features
+
+* preferCallSite option, same as in the Babel and SWC plugins ([#6](https://github.com/tanchu/vite-plugin-react-source/issues/6)) ([0fb5da3](https://github.com/tanchu/vite-plugin-react-source/commit/0fb5da333565c6d5409d87acfab42c9ff19af40e))
+
 ## [0.2.1](https://github.com/tanchu/vite-plugin-react-source/compare/vite-plugin-react-source-string-v0.2.0...vite-plugin-react-source-string-v0.2.1) (2026-11-20)
 
 
