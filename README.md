@@ -43,6 +43,12 @@ export default defineConfig(({ command }) => ({
 }));
 ```
 
+## Compatibility
+
+Vite 5, 6, 7 and 8 (including Rolldown-based Vite). The supported range is declared in `peerDependencies`.
+CI builds a fixture app with the plugin on each of these majors, on the newest Vite release and on the current
+Vite beta, on every pull request and every Monday, so a breaking Vite release is caught before you hit it.
+
 ## Plugin options
 
 | Option     | Type            | Default                       | Description                                                                 |
