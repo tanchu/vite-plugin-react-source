@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/tanchu/vite-plugin-react-source/compare/vite-plugin-react-source-string-v0.3.1...vite-plugin-react-source-string-v0.4.0) (2026-11-23)
+
+
+### Features
+
+* overlay for AI agents — Alt+click copies path:line, window.__REACT_SOURCE__ ([#11](https://github.com/tanchu/vite-plugin-react-source/issues/11)) ([a3ec499](https://github.com/tanchu/vite-plugin-react-source/commit/a3ec499f8a7a282a0ac846cf47f05b3c61852e0a))
+
 ## [0.3.1](https://github.com/tanchu/vite-plugin-react-source/compare/vite-plugin-react-source-string-v0.3.0...vite-plugin-react-source-string-v0.3.1) (2026-11-20)
 
 
