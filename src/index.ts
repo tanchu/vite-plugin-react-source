@@ -7,6 +7,7 @@ import { parseSync, Visitor } from "oxc-parser";
 import type { JSXAttributeItem, JSXElementName, JSXOpeningElement } from "oxc-parser";
 import type { FilterPattern, Plugin } from "vite";
 import { createFilter } from "vite";
+import { installReactSourceClient } from "./client";
 
 export interface ReactSourceStringOptions {
   /** Component/element names to skip (case-insensitive). For `<Foo.Bar>` the name is `Bar`. */
@@ -26,6 +27,13 @@ export interface ReactSourceStringOptions {
    * a wrapper like `<Button {...props} />` then points to where the wrapper is used, not to the wrapper file.
    */
   preferCallSite?: boolean;
+  /**
+   * In `vite serve`, add a tiny client to the page: Alt (Option) + hover highlights the element and shows
+   * its `path:line`, Alt + click copies a prompt-ready reference for an AI agent, and
+   * `window.__REACT_SOURCE__` lets browser agents look sources up with one JS call. Never added to builds.
+   * Default: `true`.
+   */
+  overlay?: boolean;
   /** Files to transform. Default: `.js .jsx .mjs .cjs .tsx` (`.ts` cannot contain JSX). */
   include?: FilterPattern;
   /** Files to skip. Default: `node_modules`. */
@@ -212,13 +220,27 @@ export default function reactSourceString(options: ReactSourceStringOptions = {}
   const excluded = options.excluded ?? [];
   const libraries = options.libraries ?? [];
   const preferCallSite = options.preferCallSite ?? false;
+  const overlay = options.overlay ?? true;
   let root = options.root || undefined;
+  let serving = false;
 
   return {
     name: "vite-plugin-react-source-string",
     enforce: "pre",
     configResolved(config) {
       if (root === undefined) root = config.root;
+      serving = config.command === "serve";
+    },
+    transformIndexHtml() {
+      if (!overlay || !serving) return;
+      return [
+        {
+          tag: "script",
+          attrs: { type: "module" },
+          children: `(${installReactSourceClient.toString()})(${JSON.stringify(ATTR)});`,
+          injectTo: "head",
+        },
+      ];
     },
     transform(code, id) {
       if (!filter(id)) return null;
@@ -228,3 +250,4 @@ export default function reactSourceString(options: ReactSourceStringOptions = {}
 }
 
 export { reactSourceString };
+export type { ReactSourceApi, ReactSourceMatch } from "./client";
