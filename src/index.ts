@@ -31,7 +31,7 @@ export interface ReactSourceStringOptions {
    * In `vite serve`, add a tiny client to the page: Alt (Option) + hover highlights the element and shows
    * its `path:line`, Alt + click copies a prompt-ready reference for an AI agent, and
    * `window.__REACT_SOURCE__` lets browser agents look sources up with one JS call. Never added to builds.
-   * Default: `true`.
+   * Default: `false`.
    */
   overlay?: boolean;
   /** Files to transform. Default: `.js .jsx .mjs .cjs .tsx` (`.ts` cannot contain JSX). */
@@ -220,7 +220,7 @@ export default function reactSourceString(options: ReactSourceStringOptions = {}
   const excluded = options.excluded ?? [];
   const libraries = options.libraries ?? [];
   const preferCallSite = options.preferCallSite ?? false;
-  const overlay = options.overlay ?? true;
+  const overlay = options.overlay ?? false;
   let root = options.root || undefined;
   let serving = false;
 

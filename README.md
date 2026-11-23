@@ -57,7 +57,7 @@ Vite beta, on every pull request and every Monday, so a breaking Vite release is
 | `root`     | `string`        | Vite's resolved `root`        | Project root for relative paths.                                            |
 | `libraries` | `string[]`     | — (tag all)                   | Tag only components imported from these packages or their subpaths (`@mui/material/Button` matches `@mui/material`); HTML elements are always tagged. |
 | `preferCallSite` | `boolean` | `false` | Put the attribute before spread props, so a `data-source` passed in from the parent wins: wrapper components point to where they are used. See [Call site or wrapper](#call-site-or-wrapper-prefercallsite). |
-| `overlay` | `boolean` | `true` | In `vite serve`, Alt (Option) + click on an element copies its `path:line` for a prompt, and `window.__REACT_SOURCE__` lets browser agents look sources up. Never added to builds. See [For AI coding agents](#for-ai-coding-agents). |
+| `overlay` | `boolean` | `false` | In `vite serve`, Alt (Option) + click on an element copies its `path:line` for a prompt, and `window.__REACT_SOURCE__` lets browser agents look sources up. Never added to builds. See [For AI coding agents](#for-ai-coding-agents). |
 | `include`  | `FilterPattern` | `/\.(?:[cm]?jsx?\|tsx)$/`     | Files to transform (`.ts` can't contain JSX).                               |
 | `exclude`  | `FilterPattern` | `/[\\/]node_modules[\\/]/`    | Files to skip.                                                              |
 
@@ -149,7 +149,7 @@ The attribute is in the DOM, but most browser agents never see it: Playwright MC
 page readers of agent browsers show the accessibility tree (`button "Pay"`), and `data-*` attributes are
 not part of it. There are two ways to get the source to the agent.
 
-**You point at it.** In `vite serve`, hold Alt (Option on macOS): the element under the cursor is outlined
+**You point at it.** Turn on the overlay with `reactSourceString({ overlay: true })`. In `vite serve`, hold Alt (Option on macOS): the element under the cursor is outlined
 with its `path:line`. Alt + click copies a reference you can paste into the prompt, without triggering the
 element:
 
@@ -158,7 +158,7 @@ src/pages/Checkout.tsx:42 <button> "Pay"
 inside: src/pages/Checkout.tsx:30 ← src/App.tsx:12
 ```
 
-**The agent looks it up.** Agents that can run JavaScript in the page (Playwright MCP `browser_evaluate`,
+**The agent looks it up.** With the overlay on, agents that can run JavaScript in the page (Playwright MCP `browser_evaluate`,
 Claude in Chrome and similar tools) get one call:
 
 ```js
