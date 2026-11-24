@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/tanchu/vite-plugin-react-source/compare/vite-plugin-react-source-string-v0.4.0...vite-plugin-react-source-string-v0.4.1) (2026-11-24)
+
+
+### Bug Fixes
+
+* **overlay:** name images and icon buttons by alt and aria-label ([#13](https://github.com/tanchu/vite-plugin-react-source/issues/13)) ([a1b83a9](https://github.com/tanchu/vite-plugin-react-source/commit/a1b83a930be05be76ce5b507630878af8553cb7b))
+
 ## [0.4.0](https://github.com/tanchu/vite-plugin-react-source/compare/vite-plugin-react-source-string-v0.3.1...vite-plugin-react-source-string-v0.4.0) (2026-11-23)
 
 
