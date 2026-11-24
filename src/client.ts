@@ -7,7 +7,7 @@ export interface ReactSourceMatch {
   source: string;
   /** Lowercase tag name of the DOM element. */
   tag: string;
-  /** Visible text, trimmed and shortened. */
+  /** The name an agent sees: `aria-label`, visible text, `alt` or `title` (of the element or an image inside), shortened. */
   text: string;
 }
 
@@ -16,7 +16,7 @@ export interface ReactSourceApi {
   of(target: Element | string): string | null;
   /** Distinct `path:line` values from the element up to the root: where it is rendered, then where its parents are. */
   stack(target: Element | string): string[];
-  /** Elements whose visible text contains `text` (case-insensitive), innermost first. */
+  /** Elements whose name (visible text, `aria-label`, `alt`, `title`) contains `text` (case-insensitive), innermost first. */
   find(text: string): ReactSourceMatch[];
   /** The prompt-ready text that Alt+click copies. */
   describe(target: Element | string): string | null;
@@ -35,8 +35,18 @@ export function installReactSourceClient(attr: string): void {
   const resolve = (target: Element | string): Element | null =>
     typeof target === "string" ? document.querySelector(target) : target;
   const tagged = (target: Element | string): Element | null => resolve(target)?.closest(selector) ?? null;
+  const clean = (text: string | null | undefined): string => (text ?? "").replace(/\s+/g, " ").trim();
+  const labelOf = (el: Element): string =>
+    clean(el.getAttribute("aria-label") || el.getAttribute("alt") || el.getAttribute("title"));
+  // The name a browser agent sees in the accessibility tree: `aria-label`, then visible text, then
+  // `alt` / `title`, then the label of an image or icon inside (`<button><img alt="Search"></button>`).
   const textOf = (el: Element): string => {
-    const text = ((el as HTMLElement).innerText ?? el.textContent ?? "").replace(/\s+/g, " ").trim();
+    const text =
+      clean(el.getAttribute("aria-label")) ||
+      clean((el as HTMLElement).innerText ?? el.textContent) ||
+      labelOf(el) ||
+      [...el.querySelectorAll("[aria-label],[alt],[title]")].map(labelOf).find(Boolean) ||
+      "";
     return text.length > 60 ? `${text.slice(0, 57)}...` : text;
   };
 
